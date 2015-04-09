@@ -101,7 +101,7 @@ def create_line_table(table='lines'):
 
 def cartodb_write(json_responses, table):
     for key, json_data in json_responses:
-        maxtime = cartodb_latest(table)
+        maxtime = cartodb_latest(table, key)
         if not maxtime:
             maxtime = 0
         for point in json_data:
@@ -138,8 +138,8 @@ def cartodb_line(json_responses, line_table, table):
         #print(response.json())
         #print('Line updated')
 
-def cartodb_latest(table):
-    query = 'SELECT MAX(unixtime) FROM {}'.format(table)
+def cartodb_latest(table, key):
+    query = "SELECT MAX(unixtime) FROM {} WHERE feedid='{}'".format(table, key)
     response = get_cartodb(query)
     return response.json()['rows'][0]['max']
 
