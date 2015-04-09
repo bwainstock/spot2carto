@@ -7,7 +7,7 @@
 import json
 import requests
 
-with open('keys.json', 'r') as f:
+with open('/home/tigren/code/spot2carto/keys.json', 'r') as f:
     keys = json.load(f)
 
 SPOT_KEYS = keys.get('SPOT')
@@ -105,7 +105,7 @@ def cartodb_write(json_responses, table):
         if not maxtime:
             maxtime = 0
         for point in json_data:
-            print(point)
+            #print(point)
             modelid = point['modelId']
             messagetype = point['messageType']
             messengerid = point['messengerId']
@@ -122,7 +122,7 @@ def cartodb_write(json_responses, table):
                     table, columns, key, modelid, messagetype, messengerid, userid,
                     latitude, longitude, unixtime, datetime, the_geom)
                 response = get_cartodb(query)
-                print(query)
+                #print(query)
                 if response.status_code != 200:
                     print("Error: {}".format(response.content))
                 else:
@@ -135,8 +135,8 @@ def cartodb_line(json_responses, line_table, table):
         subquery = "SELECT ST_MakeLine(the_geom) FROM (SELECT * FROM {} ORDER BY unixtime DESC) AS tempTable WHERE feedid='{}'".format(table, key)
         query = "UPDATE {} SET the_geom = ({}) WHERE feedid='{}'".format(line_table, subquery, key)
         response = get_cartodb(query.format(line_table, table, key, key))
-        print(response.json())
-        print('Line updated')
+        #print(response.json())
+        #print('Line updated')
 
 def cartodb_latest(table):
     query = 'SELECT MAX(unixtime) FROM {}'.format(table)
